@@ -1,7 +1,7 @@
 # Binary Search Tree (BST)
 > Java implementation of a Binary Search Tree data structure.
 
-![](header.png)
+![](headerBST.png)
 
 # Description
 Program simulates emergency waiting room in the hospital. Node's key is based on a priority number from the Patient object.
