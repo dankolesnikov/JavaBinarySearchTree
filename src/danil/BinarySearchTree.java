@@ -7,7 +7,7 @@ package danil;
  */
 
 
-/* BinarySearchTree class implements BST functionality including */
+/* BinarySearchTree class implements BST functionality including inseretion O(lgn), deletion O(lgn) and in-order traversal O(lgn) */
 public class BinarySearchTree {
 
     PatientNode root; // Root node
@@ -17,143 +17,145 @@ public class BinarySearchTree {
         root = null;
     }
 
-    /* Delete method implements delete functionality for 3 cases of BST node deletion. O(lgn) */
-    public boolean delete(int key){
-        PatientNode parent = root;
-        PatientNode current = root;
-        boolean isLeftChild = false;
-        while(current.getKey()!=key){
-            parent = current;
-            if(current.getKey()>key){
-                isLeftChild = true;
-                current = current.left;
-            }
-            else{
-                isLeftChild = false;
-                current = current.right;
-            }
-            if(current ==null){
-                return false;
-            }
-        }
+    /** treeInsert() O(lgn) is a function to insert a new node in the correct position of BST. */
+    private void treeInsert(PatientNode z)
+    {
+        PatientNode y = null;
+        PatientNode x = root;
 
-        // Case 1: If node is a leaf
-        if(current.left==null && current.right==null){
-            if(current==root){
-                root = null;
-            }
-            if(isLeftChild ==true){
-                parent.left = null;
+        while(x != null)
+        {
+            y = x;
+            if(z.getKey() < x.getKey())
+            {
+                x = x.getLeft();
             }
             else{
-                parent.right = null;
+                x = x.getRight();
             }
         }
+        z.setParent(y); //setting parent of z to y
 
-        // Case 2: Node has only one child
-        else if(current.right==null){
-            if(current==root){
-                root = current.left;
-            }
-            else if(isLeftChild){
-                parent.left = current.left;
-            }
-            else{
-                parent.right = current.left;
-            }
+        if(y == null)
+        {
+            root = z; //tree T was empty
         }
-        else if(current.left==null){
-            if(current==root){
-                root = current.right;
-            }
-            else if(isLeftChild){
-                parent.left = current.right;
-            }
-            else{
-                parent.right = current.right;
-            }
+        else if(z.getKey() < y.getKey())
+        {
+            y.setLeft(z);
         }
-
-        // Case 3: Node has 2 children
-        else if(current.left!=null && current.right!=null){
-            // Found the minimum element in the right sub tree
-            PatientNode successor	 = getSuccessor(current);
-            if(current==root){
-                root = successor;
-            }
-            else if(isLeftChild){
-                parent.left = successor;
-            }
-            else{
-                parent.right = successor;
-            }
-            successor.left = current.left;
+        else{
+            y.setRight(z);
         }
-        return true;
     }
 
-    /* getSuccessor() is a subroutine called by delete method that finds and returns a successor node. O(lgn) */
-    public PatientNode getSuccessor(PatientNode delelePatientNode){
-        PatientNode successor = null;
-        PatientNode successorParent = null;
-        PatientNode current = delelePatientNode.right;
-        while(current!=null){
-            successorParent = successor;
-            successor = current;
-            current = current.left;
+    /** treeDelete() O(lgn) method implements delete functionality for 3 cases of BST node deletion. */
+    private void treeDelete(PatientNode z)
+    {
+        if(z.getLeft() == null)
+        {
+            transplant(z, z.getRight());
         }
-        /*check if successor has the right child, it cannot have left child for sure.
-        If it does have the right child, add it to the left of successorParent.*/
-        if(successor!= delelePatientNode.right){
-            successorParent.left = successor.right;
-            successor.right = delelePatientNode.right;
+        else if(z.getRight() == null)
+        {
+            transplant(z, z.getLeft());
         }
-        return successor;
+        else
+        {
+            PatientNode y = treeMin(z.getRight());
+
+            if(y.getParent() != z)
+            {
+
+                transplant(y, y.getRight());
+                y.setRight(z.getRight());
+                y.getRight().setParent(y);
+
+            }
+            transplant(z, y);
+            y.setLeft(z.getLeft());
+            y.getLeft().setParent(y);
+        }
     }
 
-    /* insertNode() is a recursive function to insert a new node in the correct position of BST. O(lgn) */
-    public PatientNode insertNode(PatientNode root, int key, String name) {
-
-        // Edge case: if the tree is empty, return a new node.
-        if (root == null) {
-            root = new PatientNode(key,name);
-            return root;
+    /** transplant() O(lgn) is a method that replaces one sub-tree as a child of another sub-tree */
+    private void transplant(PatientNode u, PatientNode v)
+    {
+        if(u.getParent() == null)
+        {
+            root = v;
         }
-
-        // Recur down the tree
-        if (key < root.getKey()){
-            root.left = insertNode(root.left, key, name);
+        else if(u == u.getParent().getLeft())
+        {
+            u.getParent().setLeft(v);
         }
-        else if (key > root.getKey()){
-            root.right = insertNode(root.right, key,name);
+        else{
+            u.getParent().setRight(v);
         }
-
-        return root;
+        if(v != null)
+        {
+            v.setParent(u.getParent());
+        }
     }
 
-    /* inOrderTraversal() method traverses the tree and prints out in the command line. O(n) */
-    public void inOrderTraversal(PatientNode root) {
+    /** treeMin() O(lgn) is a helper method used by delete function that find the smallest node in the give tree */
+    private PatientNode treeMin(PatientNode x)
+    {
+        while(x.getLeft() != null)
+        {
+            x = x.getLeft();
+        }
+        return x;
+    }
+
+    /** searchPatient() O(lgn) is a public method to search a Patient in BST */
+    public PatientNode searchPatient(Patient p)
+    {
+        return treeSearch(root, p);
+    }
+
+
+    /** treeSearch() is a private method that searches for node x, patient p in BST*/
+    private PatientNode treeSearch(PatientNode x, Patient p)
+    {
+        if(x == null || p.getPriority() == x.getKey())
+        {
+            return x;
+        }
+        if(p.getPriority() < x.getKey())
+        {
+            return treeSearch(x.getLeft(), p);
+        }
+        else{
+            return treeSearch(x.getRight(), p);
+        }
+    }
+
+
+    /** inOrderTreeWalk method O(n) traverses the tree and prints out in the command line. */
+    private void inOrderTreeWalk(PatientNode root) {
         if (root != null) {
-            inOrderTraversal(root.left);
-            System.out.print(root.getKey()+" ("+root.getPatientName()+") ");
-            inOrderTraversal(root.right);
+            inOrderTreeWalk(root.getLeft()); // Traverse recursively down the left tree
+            System.out.print(root.getKey()+" – "+root.getData().getName()+"; ");
+            inOrderTreeWalk(root.getRight()); // Traverse recursively down the right tree
         }
     }
 
-    /* Utility method to insert a new node in the tree O(lgn) */
-    public void insert(PatientNode patient) {
-        int key = patient.getKey();
-        String name = patient.getPatientName();
-        root = insertNode(root, key, name);
+    /** Utility method O(lgn) to insert a new node in the tree  */
+    public void insert(Patient patient) {
+        PatientNode temp = new PatientNode(patient.getPriority(), patient);
+        treeInsert(temp);
+        System.out.printf("\nInserted a new patient in line: %d "+patient.getName(),patient.getPriority());
     }
 
-    /* Utility method to insert a new node in the tree O(lgn) */
-    public void deletePatient(PatientNode patient) {
-        delete(patient.getKey());
+    /** Utility method O(lgn) to delete a node in the tree */
+    public void deletePatient(Patient patient) {
+        PatientNode temp = searchPatient(patient);
+        treeDelete(temp);
     }
 
-    /* Utility method to sort a tree in the Increasing using In Order traversal O(n) */
+    /** Utility method to sort a tree in the Increasing using In Order traversal O(n) */
     public void sort()  {
-        inOrderTraversal(root);
+        inOrderTreeWalk(root);
     }
 }

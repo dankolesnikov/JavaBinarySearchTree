@@ -6,19 +6,49 @@ package danil;
  * Professor: Dr. Mike Wu
  */
 public class PatientNode {
-    private String patientName; // name of the Patient
     private int key;
-    PatientNode left, right;
+    private Patient patient;
+    private PatientNode parent, left, right;
 
+    public PatientNode(int key, Patient patient) {
+        this.patient = patient;
+        this.key = key;
+        parent = null;
+        left = null;
+        right = null;
+    }
+
+    /** Getters */
     public int getKey(){
         return key;
     }
-    public String getPatientName(){
-        return patientName;
+    public Patient getData(){
+        return patient;
     }
-    public PatientNode(int item, String name) {
-        key = item;
-        patientName = name;
-        left = right = null;
+
+    public PatientNode getLeft(){
+        return left;
     }
+
+    public PatientNode getRight(){
+        return right;
+    }
+
+    public PatientNode getParent(){
+        return parent;
+    }
+
+    /** Setters */
+    public void setLeft(PatientNode l){
+        this.left = l;
+    }
+
+    public void setRight(PatientNode r){
+        this.right = r;
+    }
+    public void setParent(PatientNode p){
+        this.parent = p;
+    }
+
+
 }
