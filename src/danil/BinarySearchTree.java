@@ -49,7 +49,7 @@ public class BinarySearchTree {
         }
     }
 
-    /** treeDelete() O(lgn) method implements delete functionality for 3 cases of BST node deletion. */
+    /* treeDelete() O(lgn) method implements delete functionality for 3 cases of BST node deletion. */
     private void treeDelete(PatientNode z)
     {
         if(z.getLeft() == null)
@@ -78,7 +78,7 @@ public class BinarySearchTree {
         }
     }
 
-    /** transplant() O(lgn) is a method that replaces one sub-tree as a child of another sub-tree */
+    /* transplant() O(lgn) is a method that replaces one sub-tree as a child of another sub-tree */
     private void transplant(PatientNode u, PatientNode v)
     {
         if(u.getParent() == null)
@@ -98,7 +98,7 @@ public class BinarySearchTree {
         }
     }
 
-    /** treeMin() O(lgn) is a helper method used by delete function that find the smallest node in the give tree */
+    /* treeMin() O(lgn) is a helper method used by delete function that find the smallest node in the give tree */
     private PatientNode treeMin(PatientNode x)
     {
         while(x.getLeft() != null)
@@ -108,14 +108,7 @@ public class BinarySearchTree {
         return x;
     }
 
-    /** searchPatient() O(lgn) is a public method to search a Patient in BST */
-    public PatientNode searchPatient(Patient p)
-    {
-        return treeSearch(root, p);
-    }
-
-
-    /** treeSearch() is a private method that searches for node x, patient p in BST*/
+    /* treeSearch() is a private method that searches for node x, patient p in BST*/
     private PatientNode treeSearch(PatientNode x, Patient p)
     {
         if(x == null || p.getPriority() == x.getKey())
@@ -131,8 +124,7 @@ public class BinarySearchTree {
         }
     }
 
-
-    /** inOrderTreeWalk method O(n) traverses the tree and prints out in the command line. */
+    /* inOrderTreeWalk method O(n) traverses the tree and prints out in the command line. */
     private void inOrderTreeWalk(PatientNode root) {
         if (root != null) {
             inOrderTreeWalk(root.getLeft()); // Traverse recursively down the left tree
@@ -141,20 +133,26 @@ public class BinarySearchTree {
         }
     }
 
-    /** Utility method O(lgn) to insert a new node in the tree  */
+    /* searchPatient() O(lgn) is a public method to search a Patient in BST */
+    public PatientNode searchPatient(Patient p)
+    {
+        return treeSearch(root, p);
+    }
+
+    /* Utility method O(lgn) to insert a new node in the tree  */
     public void insert(Patient patient) {
         PatientNode temp = new PatientNode(patient.getPriority(), patient);
         treeInsert(temp);
         System.out.printf("\nInserted a new patient in line: %d "+patient.getName(),patient.getPriority());
     }
 
-    /** Utility method O(lgn) to delete a node in the tree */
+    /* Utility method O(lgn) to delete a node in the tree */
     public void deletePatient(Patient patient) {
         PatientNode temp = searchPatient(patient);
         treeDelete(temp);
     }
 
-    /** Utility method to sort a tree in the Increasing using In Order traversal O(n) */
+    /* Utility method to sort a tree in the Increasing using In Order traversal O(n) */
     public void sort()  {
         inOrderTreeWalk(root);
     }
